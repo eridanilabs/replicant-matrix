@@ -49,22 +49,7 @@ Sub-agents live in `.github/agents/`. Invoke with the `task` tool using `agent_t
 - Hugo site work: `forgemaster` with `hugo-dev` as the implement agent
 - New/updated sub-agent: `agent-builder`
 
----
-
-## Direct Work vs. Delegation
-
-**Do work directly** when:
-- The task is a single file or a small targeted change (<50 lines)
-- It is a question, explanation, or research answer you can give from memory
-- The user asks for a quick fix or a chat-level answer
-
-**Delegate to sub-agents** when:
-- Implementation spans multiple files or requires a full build/test cycle
-- A PR needs a structured review before merge
-- Research requires deep synthesis or producing a structured document
-- Hugo site work requires knowledge of Hugo internals, theme structure, or deployment pipeline
-
-When in doubt, delegate. Sub-agents are isolated, focused, and produce verifiable artifacts.
+Delegate when a task spans multiple files, needs a build/test cycle, or requires a PR review. Do it yourself for small targeted changes (<50 lines) and chat-level answers. When in doubt, delegate.
 </subagent_roster>
 
 ---
@@ -72,20 +57,9 @@ When in doubt, delegate. Sub-agents are isolated, focused, and produce verifiabl
 <orchestration_loop>
 ## Orchestration Workflow
 
-For any non-trivial task, follow this loop:
+For any non-trivial task: confirm scope, check `bd ready --json`, then identify which sub-agents are needed (implement -> review for features; researcher for research; hugo-dev for site work). Always check git state in the relevant worktree before starting.
 
-### 1. Assess
-- Confirm scope with the user if ambiguous
-- Check open Beads tasks: `bd ready --json` (lazy - see memory protocol)
-- Check git state in the relevant worktree
-
-### 2. Identify sub-agents needed
-- Pick from the table above
-- For new features: `implement` -> `review` -> merge
-- For research: `researcher` -> surface findings -> open issue if action needed
-- For Hugo: `hugo-dev` -> `review` (if code changed) -> deploy check
-
-### 3. Write and Validate Tasks (REQUIRED before delegating)
+### Write and Validate Tasks (REQUIRED before delegating)
 
 Before handing any task to a sub-agent **OR** filing a Beads issue intended for implementation by a small/cheap model (Haiku, GPT-mini, Codex, etc.), apply the **Small Model Standard**: every task must be written at a level of specificity that a Haiku / Codex / GPT-mini class model can implement correctly with **zero design decisions left open** and **zero ambiguity** about what "done" means.
 
@@ -118,19 +92,8 @@ This rule applies to:
 **Example - PASSES the standard:**
 > "In `packages/server/src/db/repos/ThreadRepo.ts`, add a method `getByBoardId(boardId: string): Promise<Thread[]>`. It must call `db.all('SELECT * FROM threads WHERE board_id = ? ORDER BY created_at ASC', [boardId])` and return the results cast to `Thread[]`. If the query throws, re-throw the error as-is (no wrapping). Import `db` from `../db.js` and `Thread` from `../../types.js`. No new files needed. Add one test in the existing `ThreadRepo.test.ts`: seed two threads with `board_id='b1'` and one with `board_id='b2'`, call `getByBoardId('b1')`, assert the result has length 2 and is ordered by `created_at` ascending."
 
-**Why this is non-negotiable for port and migration work:** any port is a sequence of mechanical translations (source file -> target file with renames and convention changes). Each unit must be expanded into a Small-Model-Standard task before any code is written. Underspecified port tasks produce drift between source and target behavior - which is the one thing a port must not do.
-
-### 4. Execute
-- Set up a worktree for the task (see Worktree Rules below)
-- Launch sub-agent(s) with full context: working dir, branch, deliverables, architecture context, expanded task descriptions
-- After `implement` completes, always run `review` before opening a PR
-- Track progress in Beads
-
-### 5. Cleanup
-After a task is fully merged:
-- Update CHANGELOG.md if the repo has one
-- Close or update relevant Beads tasks
-- Remove worktree: `git worktree remove workbench/<slug>`
+### Execute and Cleanup
+Set up a worktree (see Worktree Rules), launch sub-agents with full context, always run `review` after `implement`. After merge: close Beads tasks, update CHANGELOG.md if one exists, remove the worktree.
 
 ### Review-Fix Loop
 
@@ -305,6 +268,17 @@ Run only when the user asks about open tasks or you are resuming active work. Do
 
 - `session-handoff-<agent-name>-*` - cross-session handoff state (written by you, read by session-start hook)
 - `model-switch-pending` - scope stored before a model switch (cleared after confirmed on resume)
+
+### Session Completion
+
+**Work is NOT complete until `git push` succeeds.** Before ending any session with code changes:
+
+```bash
+git pull --rebase && bd dolt push && git push
+git status  # must show "up to date with origin"
+```
+
+Close finished Beads tasks, file new ones for remaining work, then hand off.
 </memory_protocol>
 
 ---
@@ -402,52 +376,3 @@ Direct the user to the admin bot for:
 - Anything involving `~/.copilot-bridge/config.json` or `~/.copilot-bridge/state.db`
 
 Do not attempt to read, edit, or reason about bridge internals.
-
----
-
-<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
-## Beads Issue Tracker
-
-This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
-
-### Quick Reference
-
-```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --claim  # Claim work
-bd close <id>         # Complete work
-```
-
-### Rules
-
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
-- Run `bd prime` for detailed command reference and session close protocol
-- Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
-
-## Session Completion
-
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
-
-**MANDATORY WORKFLOW:**
-
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
-   ```bash
-   git pull --rebase
-   bd dolt push
-   git push
-   git status  # MUST show "up to date with origin"
-   ```
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
-
-**CRITICAL RULES:**
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
-<!-- END BEADS INTEGRATION -->
