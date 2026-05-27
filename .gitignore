@@ -1,0 +1,32 @@
+# replicant-matrix .gitignore
+
+# Beads store - each replicant's Beads data lives in its own workspace,
+# not in the repo checkout. Beads backup branches (beads/<name>) are managed
+# by bd backup export-git, not by regular git commits.
+.beads/
+
+# Worktrees - live outside the repo root
+workbench/
+
+# Temp files
+.temp/
+*.tmp
+
+# Screenshots and ad-hoc local images
+/*.png
+/*.jpg
+/*.jpeg
+/*.gif
+/*.webp
+
+# Playwright output (fine locally, not version controlled)
+playwright-report/
+test-results/
+playwright/.cache/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

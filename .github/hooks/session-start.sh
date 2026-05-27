@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# session-start.sh
+#
+# Generic session-start hook for replicant-matrix agents.
+# Sources replicant.env (two levels up from .github/hooks/) if present,
+# then injects handoff state and top open tasks into additionalContext.
+#
+# Output: { "additionalContext": "<text>" } consumed by copilot-bridge SDK.
+set -euo pipefail
+
+cat >/dev/null
+
+export PATH="/home/raykao/.local/bin:$PATH"
+
+# Source replicant.env if present - sets AGENT_NAME, BEADS_DIR, BEADS_ACTOR
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+ENV_FILE="$WORKSPACE_ROOT/replicant.env"
+if [ -f "$ENV_FILE" ]; then
+  # shellcheck source=/dev/null
+  set -a
+  source "$ENV_FILE"
+  set +a
+fi
+
+# Require BEADS_DIR and BEADS_ACTOR to be set (from replicant.env or environment)
+if [ -z "${BEADS_DIR:-}" ] || [ -z "${BEADS_ACTOR:-}" ]; then
+  echo '{}'
+  exit 0
+fi
+
+export BEADS_DIR
+export BEADS_ACTOR
+
+if ! command -v bd &>/dev/null; then
+  echo '{}'
+  exit 0
+fi
+
+bd prime >/dev/null 2>&1 || true
+
+HANDOFF_KEY=$(bd memories "session-handoff-${BEADS_ACTOR}-" --json 2>/dev/null \
+  | jq -r "keys[]? | select(startswith(\"session-handoff-${BEADS_ACTOR}-\"))" \
+  | sort | tail -1 || true)
+
+if [ -z "$HANDOFF_KEY" ]; then
+  echo '{}'
+  exit 0
+fi
+
+HANDOFF_BODY=$(bd recall "$HANDOFF_KEY" 2>/dev/null || true)
+if [ -z "$HANDOFF_BODY" ]; then
+  echo '{}'
+  exit 0
+fi
+
+READY=$(bd ready --json 2>/dev/null \
+  | jq -r '.[]? | "  - \(.id // "?"): \(.title // "(untitled)")"' 2>/dev/null \
+  | head -10 || true)
+[ -z "$READY" ] && READY="  (none)"
+
+CONTEXT=$(cat <<HANDOFF
+## Session Resume State
+
+The following was auto-injected by the sessionStart hook from Beads (source of truth).
+
+**Latest handoff** (\`$HANDOFF_KEY\`):
+
+$HANDOFF_BODY
+
+**Top open Beads tasks:**
+
+$READY
+
+You are resuming a prior session. On your first turn, briefly acknowledge the handoff and confirm scope with the user before starting new work. If the user's first message is unrelated to the handoff, treat it as background context and proceed with their request.
+HANDOFF
+)
+
+jq -n --arg ctx "$CONTEXT" '{additionalContext: $ctx}'
