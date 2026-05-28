@@ -46,8 +46,6 @@ HANDOFF_KEY=$(bd memories "session-handoff-${BEADS_ACTOR}-" --json 2>/dev/null \
   | jq -r "keys[]? | select(startswith(\"session-handoff-${BEADS_ACTOR}-\"))" \
   | sort | tail -1 || true)
 
-ENV_INSTRUCTION="Before running any bd command this session, source your replicant.env: \`source ${ENV_FILE}\`"
-
 if [ -z "$HANDOFF_KEY" ]; then
   jq -n --arg ctx "$ENV_INSTRUCTION" '{additionalContext: $ctx}'
   exit 0
