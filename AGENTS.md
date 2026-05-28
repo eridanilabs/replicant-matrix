@@ -224,6 +224,26 @@ export BEADS_DIR="<your-workspace>/.beads"   # from REPLICANT IDENTITY
 export BEADS_ACTOR="<your-agent-name>"        # from REPLICANT IDENTITY
 ```
 
+### Shared Dolt SQL Server
+
+All replicant agents connect to a shared `dolthub/dolt-sql-server` container defined in `raykao/copilot-bridge-config` (`docker-compose.yml`). This is the canonical Beads backend - do not use the embedded Dolt engine.
+
+Configure your Beads client to use the shared server on first setup:
+
+```bash
+bd dolt set host 127.0.0.1
+bd dolt set port 3307
+bd dolt set database <your-agent-name>   # e.g. homer, milo, bill
+```
+
+The server listens on `127.0.0.1:3307` (host-only binding - not exposed externally). Credentials are in the shared `.env` under `DOLT_ROOT_PASSWORD`. Verify your connection with:
+
+```bash
+bd dolt test
+```
+
+> Database naming strategy (which agents share one DB vs. have their own) is a pending decision - see open discussion. Default for now: one database per agent, named after `BEADS_ACTOR`.
+
 Common operations:
 ```bash
 bd ready --json                          # list open tasks (lazy - see below)
