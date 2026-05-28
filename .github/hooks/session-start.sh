@@ -12,16 +12,18 @@ cat >/dev/null
 
 export PATH="/home/raykao/.local/bin:$PATH"
 
-# Source replicant.env if present - sets AGENT_NAME, BEADS_DIR, BEADS_ACTOR
+# Source env files - sets AGENT_NAME, BEADS_DIR, BEADS_ACTOR, BEADS_DOLT_PASSWORD
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+
+set -a
+# Source workspace .env first (always present, loaded by bridge)
+[ -f "$WORKSPACE_ROOT/.env" ] && source "$WORKSPACE_ROOT/.env"
+# Source replicant.env if present (may override with agent-specific values)
+[ -f "$WORKSPACE_ROOT/replicant.env" ] && source "$WORKSPACE_ROOT/replicant.env"
+set +a
+
 ENV_FILE="$WORKSPACE_ROOT/replicant.env"
-if [ -f "$ENV_FILE" ]; then
-  # shellcheck source=/dev/null
-  set -a
-  source "$ENV_FILE"
-  set +a
-fi
 
 # Require BEADS_DIR and BEADS_ACTOR to be set (from replicant.env or environment)
 if [ -z "${BEADS_DIR:-}" ] || [ -z "${BEADS_ACTOR:-}" ]; then
