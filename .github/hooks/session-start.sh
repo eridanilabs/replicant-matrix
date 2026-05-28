@@ -23,9 +23,10 @@ set -a
 [ -f "$WORKSPACE_ROOT/replicant.env" ] && source "$WORKSPACE_ROOT/replicant.env"
 set +a
 
-ENV_FILE="$WORKSPACE_ROOT/replicant.env"
+ENV_FILE="$WORKSPACE_ROOT/.env"
+ENV_INSTRUCTION="Run this before any bd command this session: \`set -a; source ${ENV_FILE}; set +a\`"
 
-# Require BEADS_DIR and BEADS_ACTOR to be set (from replicant.env or environment)
+# Require BEADS_DIR and BEADS_ACTOR to be set (from .env or environment)
 if [ -z "${BEADS_DIR:-}" ] || [ -z "${BEADS_ACTOR:-}" ]; then
   echo '{}'
   exit 0
@@ -68,7 +69,7 @@ CONTEXT=$(cat <<HANDOFF
 
 The following was auto-injected by the sessionStart hook from Beads (source of truth).
 
-**Environment**: Run \`source ${ENV_FILE}\` before any bd command this session.
+**Environment**: Run `set -a; source ${ENV_FILE}; set +a` before any bd command this session.
 
 **Latest handoff** (\`$HANDOFF_KEY\`):
 
