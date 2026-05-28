@@ -216,12 +216,18 @@ Default model is **Sonnet**. Assess before starting non-trivial work:
 <memory_protocol>
 ## Task Memory (Beads)
 
-Your `BEADS_DIR` and `BEADS_ACTOR` are defined in your REPLICANT IDENTITY block. Set them before every `bd` command:
+Your `BEADS_DIR`, `BEADS_ACTOR`, and `BEADS_DOLT_PASSWORD` are set in `replicant.env` at your workspace root. Source it before every `bd` command:
 
 ```bash
 export PATH="/home/raykao/.local/bin:$PATH"
-export BEADS_DIR="<your-workspace>/.beads"   # from REPLICANT IDENTITY
-export BEADS_ACTOR="<your-agent-name>"        # from REPLICANT IDENTITY
+source "$WORKSPACE_ROOT/replicant.env"   # sets BEADS_DIR, BEADS_ACTOR, BEADS_DOLT_PASSWORD
+```
+
+Where `WORKSPACE_ROOT` is your workspace directory (e.g. `/home/raykao/.copilot-bridge/workspaces/homer`). You can also export the path directly:
+
+```bash
+export PATH="/home/raykao/.local/bin:$PATH"
+source /home/raykao/.copilot-bridge/workspaces/<your-agent-name>/replicant.env
 ```
 
 ### Shared Dolt SQL Server
