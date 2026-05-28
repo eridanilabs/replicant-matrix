@@ -30,3 +30,7 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Agent-specific runtime secrets
+replicant.env
+.env
