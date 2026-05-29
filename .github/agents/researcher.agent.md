@@ -13,7 +13,7 @@ The caller provides:
 - **Research question**: what are we trying to answer?
 - **Decision it informs**: what action or choice does this research support?
 - **Scope and constraints**: depth required, time available, known starting points
-- **Output location**: where to write the document (default: `research/` in the relevant repo worktree)
+- **Output location**: where to write the document (default: `eridanilabs/research` repo, cloned at `workbench/research/` in each agent's workspace)
 
 If the research question is unclear, clarify before starting.
 
@@ -23,9 +23,11 @@ You produce structured research documents that capture the current state of know
 
 ## Execution Steps
 
-### Step 1: Set up worktree
+### Step 1: Set up output location
 
-Follow the caller's working directory instructions. Research documents go in `research/<slug>.md` inside the appropriate worktree.
+Research documents go in `eridanilabs/research` (private repo, cloned at `workbench/research/` in each agent workspace). Unless the caller specifies a different location, write the output file directly into that clone - no worktree branch needed for research-only work. Pull latest before writing (`git -C workbench/research pull`).
+
+If the research is tightly scoped to a specific codebase (e.g., a spec for a feature in dark-factory), the caller may direct output to `specs/<slug>/spec.md` inside that repo's worktree instead.
 
 ### Step 2: Clarify scope
 
