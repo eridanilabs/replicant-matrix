@@ -60,7 +60,7 @@ All agent creation and modification work MUST be performed in an isolated git br
 - **Worktree path**: `workbench/<branch-leaf>` (e.g., `workbench/security-reviewer`).
 - **Isolation**: All file operations (create, edit) MUST happen within the worktree, not the main repository working directory.
 - **Worktree setup is Step 1**: The worktree MUST be created and verified before any documentation is consulted, any files are read, or any agent content is written.
-- **Workspace root**: `/home/raykao/.copilot-bridge/workspaces/bill`
+- **Workspace root**: `$HOME/.copilot-bridge/workspaces/bill`
 
 ## YAML Frontmatter Reference
 

@@ -42,14 +42,17 @@ import sys
 import textwrap
 from pathlib import Path
 
-WORKSPACE_BASE = Path("/home/raykao/.copilot-bridge/workspaces")
+# Real resolved path for runtime filesystem operations on this host.
+WORKSPACE_BASE = Path.home() / ".copilot-bridge" / "workspaces"
+# Portable literal written into committed files (expanded by bash at source time).
+WORKSPACE_BASE_LITERAL = "$HOME/.copilot-bridge/workspaces"
 REPLICANT_MATRIX_REPO = "eridanilabs/replicant-matrix"
 DOLT_CONTAINER = "copilot-bridge-dolt-1"
 PROJECT_ID = "d4dd24e1-3236-4e0c-b8fa-ce40043acc86"
 DOLT_DATABASE = "replicant"
 DOLT_HOST = "127.0.0.1"
 DOLT_PORT = 3307
-BD_BIN = Path("/home/raykao/.local/bin/bd")
+BD_BIN = Path.home() / ".local" / "bin" / "bd"
 
 
 def run(cmd, check=True, capture=False, env=None):
@@ -93,7 +96,7 @@ def create_db_user(name, password):
 def init_beads(name, workspace):
     print(f"\n[6] Initialising Beads (server mode, database={DOLT_DATABASE})...")
     env = {
-        "PATH": f"/home/raykao/.local/bin:{os.environ.get('PATH', '')}",
+        "PATH": f"{Path.home()}/.local/bin:{os.environ.get('PATH', '')}",
         "BEADS_DIR": str(workspace / ".beads"),
         "BEADS_ACTOR": name,
     }
@@ -139,7 +142,7 @@ def create_branch(name, role, channel, repo_root):
         **Agent**: {name}
         **Channel**: {channel}
         **Base**: `{REPLICANT_MATRIX_REPO}` branch `replicant/{name}`
-        **Workspace**: `{WORKSPACE_BASE}/{name}`
+        **Workspace**: `{WORKSPACE_BASE_LITERAL}/{name}`
 
         ## Role
 
@@ -161,9 +164,9 @@ def create_branch(name, role, channel, repo_root):
     identity_block = textwrap.dedent(f"""\
         <!-- BEGIN REPLICANT IDENTITY -->
         **Agent**: {name}
-        **Workspace**: `{WORKSPACE_BASE}/{name}`
+        **Workspace**: `{WORKSPACE_BASE_LITERAL}/{name}`
         **Beads**:
-          - `BEADS_DIR="{WORKSPACE_BASE}/{name}/.beads"`
+          - `BEADS_DIR="{WORKSPACE_BASE_LITERAL}/{name}/.beads"`
           - `BEADS_ACTOR="{name}"`
         **Branch prefix**: `{name}/`
         **Worktree prefix**: `{name}-`
@@ -196,7 +199,7 @@ def create_branch(name, role, channel, repo_root):
     replicant_env = textwrap.dedent(f"""\
         # {name} - runtime environment
         # BEADS_DOLT_PASSWORD is set in .env (gitignored, never committed)
-        BEADS_DIR={WORKSPACE_BASE}/{name}/.beads
+        BEADS_DIR={WORKSPACE_BASE_LITERAL}/{name}/.beads
         BEADS_ACTOR={name}
         BEADS_DOLT_USER={name}
     """)

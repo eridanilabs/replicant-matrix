@@ -8,9 +8,9 @@ It is NOT loaded at runtime - it exists for documentation and easy diffing betwe
 
 <!-- BEGIN REPLICANT IDENTITY -->
 **Agent**: <name>
-**Workspace**: `/home/raykao/.copilot-bridge/workspaces/<name>`
+**Workspace**: `$HOME/.copilot-bridge/workspaces/<name>`
 **Beads**:
-  - `BEADS_DIR="/home/raykao/.copilot-bridge/workspaces/<name>/.beads"`
+  - `BEADS_DIR="$HOME/.copilot-bridge/workspaces/<name>/.beads"`
   - `BEADS_ACTOR="<name>"`
 **Branch prefix**: `<name>/`
 **Worktree prefix**: `<name>-`

@@ -10,7 +10,7 @@ This workspace uses [Beads](https://github.com/steveyegge/beads) (`bd`) for pers
 ## Environment
 
 Always ensure these are set before running `bd`:
-- `BEADS_DIR=/home/raykao/.copilot-bridge/workspaces/bill/.beads`
+- `BEADS_DIR=$HOME/.copilot-bridge/workspaces/bill/.beads`
 - `BEADS_ACTOR=bill`
 
 These are injected automatically via the workspace `.env` file.

@@ -10,7 +10,7 @@ set -euo pipefail
 
 cat >/dev/null
 
-export PATH="/home/raykao/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # Source env files - sets AGENT_NAME, BEADS_DIR, BEADS_ACTOR, BEADS_DOLT_PASSWORD
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
