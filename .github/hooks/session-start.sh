@@ -14,7 +14,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Source env files - sets AGENT_NAME, BEADS_DIR, BEADS_ACTOR, BEADS_DOLT_PASSWORD
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")" 
 
 set -a
 # Source workspace .env first (always present, loaded by bridge)
@@ -23,9 +23,17 @@ set -a
 [ -f "$WORKSPACE_ROOT/replicant.env" ] && source "$WORKSPACE_ROOT/replicant.env"
 set +a
 
-ENV_FILE="$WORKSPACE_ROOT/.env"
-ENV_INSTRUCTION="Run this before any bd command this session: \`set -a; source ${ENV_FILE}; set +a\`"
+# Derive BEADS_DIR from the bridge home + actor when not explicitly provided.
+# An explicit BEADS_DIR (e.g. from the bridge-written .env) always wins; this is
+# the cross-host fallback so per-agent files never need to store an absolute path.
+BRIDGE_HOME="${COPILOT_BRIDGE_HOME:-$HOME/.copilot-bridge}"
+if [ -z "${BEADS_DIR:-}" ] && [ -n "${BEADS_ACTOR:-}" ]; then
+  BEADS_DIR="$BRIDGE_HOME/workspaces/$BEADS_ACTOR/.beads"
+fi
 
+ENV_FILE="$WORKSPACE_ROOT/.env"
+REPLICANT_ENV_FILE="$WORKSPACE_ROOT/replicant.env"
+ENV_INSTRUCTION="Run this before any bd command this session: \`set -a; [ -f ${ENV_FILE} ] && source ${ENV_FILE}; [ -f ${REPLICANT_ENV_FILE} ] && source ${REPLICANT_ENV_FILE}; set +a; BEADS_DIR=\"\${BEADS_DIR:-\${COPILOT_BRIDGE_HOME:-\$HOME/.copilot-bridge}/workspaces/\$BEADS_ACTOR/.beads}\"; export BEADS_DIR\`"
 # Require BEADS_DIR and BEADS_ACTOR to be set (from .env or environment)
 if [ -z "${BEADS_DIR:-}" ] || [ -z "${BEADS_ACTOR:-}" ]; then
   echo '{}'
@@ -67,7 +75,7 @@ CONTEXT=$(cat <<HANDOFF
 
 The following was auto-injected by the sessionStart hook from Beads (source of truth).
 
-**Environment**: Run `set -a; source ${ENV_FILE}; set +a` before any bd command this session.
+**Environment**: $ENV_INSTRUCTION
 
 **Latest handoff** (\`$HANDOFF_KEY\`):
 

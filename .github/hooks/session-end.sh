@@ -2,7 +2,7 @@
 # session-end.sh
 #
 # Generic session-end hook for replicant-matrix agents.
-# Sources replicant.env then runs Beads git backup.
+# Sources .env + replicant.env, derives BEADS_DIR, then runs Beads git backup.
 set -euo pipefail
 
 cat >/dev/null
@@ -11,12 +11,18 @@ export PATH="$HOME/.local/bin:$PATH"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
-ENV_FILE="$WORKSPACE_ROOT/replicant.env"
-if [ -f "$ENV_FILE" ]; then
-  set -a
-  # shellcheck source=/dev/null
-  source "$ENV_FILE"
-  set +a
+
+set -a
+# Source workspace .env first (bridge-written, may set an explicit BEADS_DIR)
+[ -f "$WORKSPACE_ROOT/.env" ] && source "$WORKSPACE_ROOT/.env"
+# Source replicant.env if present (agent-specific values: actor, dolt user)
+[ -f "$WORKSPACE_ROOT/replicant.env" ] && source "$WORKSPACE_ROOT/replicant.env"
+set +a
+
+# Derive BEADS_DIR from the bridge home + actor when not explicitly provided.
+BRIDGE_HOME="${COPILOT_BRIDGE_HOME:-$HOME/.copilot-bridge}"
+if [ -z "${BEADS_DIR:-}" ] && [ -n "${BEADS_ACTOR:-}" ]; then
+  BEADS_DIR="$BRIDGE_HOME/workspaces/$BEADS_ACTOR/.beads"
 fi
 
 if [ -n "${BEADS_DIR:-}" ]; then

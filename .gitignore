@@ -34,3 +34,8 @@ Thumbs.db
 # Agent-specific runtime secrets
 replicant.env
 .env
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
