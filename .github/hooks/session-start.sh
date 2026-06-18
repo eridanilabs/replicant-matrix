@@ -66,7 +66,7 @@ if [ -z "$HANDOFF_BODY" ]; then
 fi
 
 READY=$(bd ready --json 2>/dev/null \
-  | jq -r '.[]? | "  - \(.id // "?"): \(.title // "(untitled)")"' 2>/dev/null \
+  | jq -r '.[]? | "  - \(.id // "?")): \(.title // "(untitled)")"' 2>/dev/null \
   | head -10 || true)
 [ -z "$READY" ] && READY="  (none)"
 
@@ -75,7 +75,7 @@ CONTEXT=$(cat <<HANDOFF
 
 The following was auto-injected by the sessionStart hook from Beads (source of truth).
 
-**Environment**: Run `set -a; source ${ENV_FILE}; set +a` before any bd command this session.
+**Environment**: $ENV_INSTRUCTION
 
 **Latest handoff** (\`$HANDOFF_KEY\`):
 
