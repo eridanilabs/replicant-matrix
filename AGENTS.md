@@ -229,7 +229,10 @@ Where `WORKSPACE_ROOT` is your workspace directory (e.g. `$HOME/.copilot-bridge/
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
-source "$HOME/.copilot-bridge/workspaces/<your-agent-name>/replicant.env"
+WR="$HOME/.copilot-bridge/workspaces/<your-agent-name>"
+set -a; [ -f "$WR/.env" ] && source "$WR/.env"; source "$WR/replicant.env"; set +a
+BEADS_DIR="${BEADS_DIR:-${COPILOT_BRIDGE_HOME:-$HOME/.copilot-bridge}/workspaces/$BEADS_ACTOR/.beads}"
+export BEADS_DIR
 ```
 
 ### Shared Dolt SQL Server
@@ -361,7 +364,7 @@ Key conventions:
 - Site config in `hugo.toml` (or `config.toml`)
 - Theme is a git submodule - do NOT modify theme files directly, override in `layouts/`
 - Always run `hugo --minify` locally to verify builds before pushing
-- GitHub Actions workflow handles deploy; check `.github/workflows/` for the exact steps
+- GitHub Actions workflow handles deploy; check `.github/workflows/` for the actual steps
 - Use the `hugo-dev` sub-agent for any work that touches layouts, shortcodes, or the build pipeline
 </hugo_conventions>
 

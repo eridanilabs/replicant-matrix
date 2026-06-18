@@ -14,7 +14,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Source env files - sets AGENT_NAME, BEADS_DIR, BEADS_ACTOR, BEADS_DOLT_PASSWORD
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")" 
 
 set -a
 # Source workspace .env first (always present, loaded by bridge)
@@ -66,7 +66,7 @@ if [ -z "$HANDOFF_BODY" ]; then
 fi
 
 READY=$(bd ready --json 2>/dev/null \
-  | jq -r '.[]? | "  - \(.id // "?")): \(.title // "(untitled)")"' 2>/dev/null \
+  | jq -r '.[]? | "  - \(.id // "?"): \(.title // "(untitled)")"' 2>/dev/null \
   | head -10 || true)
 [ -z "$READY" ] && READY="  (none)"
 
