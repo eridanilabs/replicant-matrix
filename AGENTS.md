@@ -220,7 +220,7 @@ Your `BEADS_ACTOR` and `BEADS_DOLT_USER` are set in `replicant.env`, and `BEADS_
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
-set -a; source "$WORKSPACE_ROOT/.env"; source "$WORKSPACE_ROOT/replicant.env"; set +a
+set -a; [ -f "$WORKSPACE_ROOT/.env" ] && source "$WORKSPACE_ROOT/.env"; source "$WORKSPACE_ROOT/replicant.env"; set +a
 BEADS_DIR="${BEADS_DIR:-${COPILOT_BRIDGE_HOME:-$HOME/.copilot-bridge}/workspaces/$BEADS_ACTOR/.beads}"
 export BEADS_DIR
 ```
