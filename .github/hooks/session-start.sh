@@ -32,8 +32,8 @@ if [ -z "${BEADS_DIR:-}" ] && [ -n "${BEADS_ACTOR:-}" ]; then
 fi
 
 ENV_FILE="$WORKSPACE_ROOT/.env"
-ENV_INSTRUCTION="Run this before any bd command this session: \`set -a; source ${ENV_FILE}; set +a\`"
-
+REPLICANT_ENV_FILE="$WORKSPACE_ROOT/replicant.env"
+ENV_INSTRUCTION="Run this before any bd command this session: \`set -a; [ -f ${ENV_FILE} ] && source ${ENV_FILE}; [ -f ${REPLICANT_ENV_FILE} ] && source ${REPLICANT_ENV_FILE}; set +a; BEADS_DIR=\"\${BEADS_DIR:-\${COPILOT_BRIDGE_HOME:-\$HOME/.copilot-bridge}/workspaces/\$BEADS_ACTOR/.beads}\"; export BEADS_DIR\`"
 # Require BEADS_DIR and BEADS_ACTOR to be set (from .env or environment)
 if [ -z "${BEADS_DIR:-}" ] || [ -z "${BEADS_ACTOR:-}" ]; then
   echo '{}'
