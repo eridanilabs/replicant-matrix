@@ -199,9 +199,9 @@ def create_branch(name, role, channel, repo_root):
     replicant_env = textwrap.dedent(f"""\
         # {name} - runtime environment
         # BEADS_DOLT_PASSWORD is set in .env (gitignored, never committed)
-        BEADS_DIR={WORKSPACE_BASE_LITERAL}/{name}/.beads
-        BEADS_ACTOR={name}
-        BEADS_DOLT_USER={name}
+        BEADS_DIR="{WORKSPACE_BASE_LITERAL}/{name}/.beads"
+        BEADS_ACTOR="{name}"
+        BEADS_DOLT_USER="{name}"
     """)
     (repo_root / "replicant.env").write_text(replicant_env)
 
