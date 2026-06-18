@@ -166,8 +166,8 @@ def create_branch(name, role, channel, repo_root):
         **Agent**: {name}
         **Workspace**: `{WORKSPACE_BASE_LITERAL}/{name}`
         **Beads**:
-          - `BEADS_DIR="{WORKSPACE_BASE_LITERAL}/{name}/.beads"`
           - `BEADS_ACTOR="{name}"`
+          - `BEADS_DIR`: derived by the session hooks from `$COPILOT_BRIDGE_HOME` (default `$HOME/.copilot-bridge`) + `BEADS_ACTOR`
         **Branch prefix**: `{name}/`
         **Worktree prefix**: `{name}-`
         **Session handoff key prefix**: `session-handoff-{name}-`
@@ -199,7 +199,8 @@ def create_branch(name, role, channel, repo_root):
     replicant_env = textwrap.dedent(f"""\
         # {name} - runtime environment
         # BEADS_DOLT_PASSWORD is set in .env (gitignored, never committed)
-        BEADS_DIR="{WORKSPACE_BASE_LITERAL}/{name}/.beads"
+        # BEADS_DIR is derived by the session hooks from
+        # $COPILOT_BRIDGE_HOME (default $HOME/.copilot-bridge) + BEADS_ACTOR.
         BEADS_ACTOR="{name}"
         BEADS_DOLT_USER="{name}"
     """)

@@ -216,11 +216,13 @@ Default model is **Sonnet**. Assess before starting non-trivial work:
 <memory_protocol>
 ## Task Memory (Beads)
 
-Your `BEADS_DIR`, `BEADS_ACTOR`, and `BEADS_DOLT_PASSWORD` are set in `replicant.env` at your workspace root. Source it before every `bd` command:
+Your `BEADS_ACTOR` and `BEADS_DOLT_USER` are set in `replicant.env`, and `BEADS_DOLT_PASSWORD` lives in `.env` (gitignored). `BEADS_DIR` is derived by the session hooks from `$COPILOT_BRIDGE_HOME` (default `$HOME/.copilot-bridge`) plus `BEADS_ACTOR`, so it is never stored as an absolute path. Source the env files before every `bd` command:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
-source "$WORKSPACE_ROOT/replicant.env"   # sets BEADS_DIR, BEADS_ACTOR, BEADS_DOLT_PASSWORD
+set -a; source "$WORKSPACE_ROOT/.env"; source "$WORKSPACE_ROOT/replicant.env"; set +a
+BEADS_DIR="${BEADS_DIR:-${COPILOT_BRIDGE_HOME:-$HOME/.copilot-bridge}/workspaces/$BEADS_ACTOR/.beads}"
+export BEADS_DIR
 ```
 
 Where `WORKSPACE_ROOT` is your workspace directory (e.g. `$HOME/.copilot-bridge/workspaces/homer`). You can also export the path directly:

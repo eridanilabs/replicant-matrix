@@ -23,6 +23,14 @@ set -a
 [ -f "$WORKSPACE_ROOT/replicant.env" ] && source "$WORKSPACE_ROOT/replicant.env"
 set +a
 
+# Derive BEADS_DIR from the bridge home + actor when not explicitly provided.
+# An explicit BEADS_DIR (e.g. from the bridge-written .env) always wins; this is
+# the cross-host fallback so per-agent files never need to store an absolute path.
+BRIDGE_HOME="${COPILOT_BRIDGE_HOME:-$HOME/.copilot-bridge}"
+if [ -z "${BEADS_DIR:-}" ] && [ -n "${BEADS_ACTOR:-}" ]; then
+  BEADS_DIR="$BRIDGE_HOME/workspaces/$BEADS_ACTOR/.beads"
+fi
+
 ENV_FILE="$WORKSPACE_ROOT/.env"
 ENV_INSTRUCTION="Run this before any bd command this session: \`set -a; source ${ENV_FILE}; set +a\`"
 
