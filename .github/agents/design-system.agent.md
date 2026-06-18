@@ -51,7 +51,7 @@ All work MUST be performed in an isolated git branch and worktree:
 - **Branch naming**: `bill/design-system/<scope>` (e.g. `bill/design-system/phase-1-ui`)
 - **Worktree path**: `workbench/<branch-leaf>` (e.g. `workbench/phase-1-ui`)
 - **Isolation**: All file operations MUST happen within the worktree. Never write to the main working directory.
-- **Workspace root**: `/home/raykao/.copilot-bridge/workspaces/bill`
+- **Workspace root**: `$HOME/.copilot-bridge/workspaces/bill`
 
 ## Execution Steps
 

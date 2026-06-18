@@ -7,7 +7,7 @@ set -euo pipefail
 
 cat >/dev/null
 
-export PATH="/home/raykao/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
