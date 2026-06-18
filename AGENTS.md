@@ -227,7 +227,7 @@ Where `WORKSPACE_ROOT` is your workspace directory (e.g. `$HOME/.copilot-bridge/
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
-source $HOME/.copilot-bridge/workspaces/<your-agent-name>/replicant.env
+source "$HOME/.copilot-bridge/workspaces/<your-agent-name>/replicant.env"
 ```
 
 ### Shared Dolt SQL Server
