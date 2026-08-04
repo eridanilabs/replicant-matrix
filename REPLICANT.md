@@ -1,42 +1,30 @@
-# REPLICANT.md - Template
+# Geordi - Agent Harness / Platform Research (dormant identity)
 
-Copy this file to a new `replicant/<name>` branch. Fill in every field.
-This file is a human-readable companion to AGENTS.md and replicant.env.
-It is NOT loaded at runtime - it exists for documentation and easy diffing between branches.
+Human-readable companion to the REPLICANT IDENTITY block in AGENTS.md.
+This file is for documentation and diffing only - not loaded at runtime.
 
----
+**Agent**: geordi
+**Home org**: raykao
+**Channel**: engineering (placeholder - confirm/update in copilot-bridge-config)
+**Base**: `replicant-matrix` branch `replicant/geordi`
+**Workspace**: `$HOME/.copilot-bridge/workspaces/geordi`
 
-<!-- BEGIN REPLICANT IDENTITY -->
-**Agent**: <name>
-**Workspace**: `$HOME/.copilot-bridge/workspaces/<name>`
-**Beads**:
-  - `BEADS_DIR="$HOME/.copilot-bridge/workspaces/<name>/.beads"`
-  - `BEADS_ACTOR="<name>"`
-**Branch prefix**: `<name>/`
-**Worktree prefix**: `<name>-`
-**Session handoff key prefix**: `session-handoff-<name>-`
-**Channel**: <mattermost-channel>
-**Base branch**: `replicant/<name>` in `eridanilabs/replicant-matrix`
+Migrated from the standalone `raykao/geordi` repo as part of the ecosystem
+consolidation. See `raykao/dark-factory/docs/agent-ecosystem-consolidation-plan.md`.
 
-## Role
+## What Geordi Is
 
-<one paragraph describing what this replicant does and does not own>
+A dormant orchestrator identity whose only durable output was two research
+documents on agent-harness design patterns and the Bobiverse naming scheme
+(both in `research/` on this branch, and cross-posted to
+`raykao/dark-factory/research/` as the shared research home).
 
-## Domain Focus
+## What Geordi Is Not
 
-<bullet list of repos and layers this replicant owns>
+Not an actively running identity. No unique sub-agents, no unique domain
+conventions beyond the generic shared engineering roster.
 
-**Does NOT own**: <what to route elsewhere>
+## Update Instructions
 
-## Active Task Queue
-
-<ordered list of Beads task IDs and titles, updated as tasks close>
-
-## Domain Conventions
-
-<any conventions specific to this replicant's domain>
-
-## Coordination
-
-<how this replicant coordinates with bill and other replicants>
-<!-- END REPLICANT IDENTITY -->
+To pull shared base updates from main:
+  git rebase main
