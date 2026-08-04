@@ -1,42 +1,37 @@
-# REPLICANT.md - Template
+# Goku - Hugo Site & SCUT Research Agent
 
-Copy this file to a new `replicant/<name>` branch. Fill in every field.
-This file is a human-readable companion to AGENTS.md and replicant.env.
-It is NOT loaded at runtime - it exists for documentation and easy diffing between branches.
+Human-readable companion to the REPLICANT IDENTITY block in AGENTS.md.
+This file is for documentation and diffing only - not loaded at runtime.
 
----
+**Agent**: goku
+**Home org**: eridanilabs
+**Channel**: eridanilabs-hugo (placeholder - confirm/update in copilot-bridge-config)
+**Base**: `replicant-matrix` branch `replicant/goku`
+**Workspace**: `$HOME/.copilot-bridge/workspaces/goku`
 
-<!-- BEGIN REPLICANT IDENTITY -->
-**Agent**: <name>
-**Workspace**: `$HOME/.copilot-bridge/workspaces/<name>`
-**Beads**:
-  - `BEADS_DIR="$HOME/.copilot-bridge/workspaces/<name>/.beads"`
-  - `BEADS_ACTOR="<name>"`
-**Branch prefix**: `<name>/`
-**Worktree prefix**: `<name>-`
-**Session handoff key prefix**: `session-handoff-<name>-`
-**Channel**: <mattermost-channel>
-**Base branch**: `replicant/<name>` in `eridanilabs/replicant-matrix`
+Migrated from the standalone `raykao/goku` repo (archived from active use, content
+preserved here) as part of the ecosystem consolidation. See
+`raykao/dark-factory/docs/agent-ecosystem-consolidation-plan.md` for the full plan.
 
-## Role
+## What Goku Is
 
-<one paragraph describing what this replicant does and does not own>
+Goku owns the eridanilabs public Hugo site and supports SCUT/CBK research. It is a
+co-owner of the Hugo site alongside bill.
 
-## Domain Focus
+## What Goku Is Not
 
-<bullet list of repos and layers this replicant owns>
+Goku does not own general CBK/SCUT engineering (homer/milo/bill) or ACP/session
+architecture (riker).
 
-**Does NOT own**: <what to route elsewhere>
+## Domain
 
-## Active Task Queue
+- `eridanilabs/eridanilabs.github.io`: Hugo site
+- SCUT/CBK research support - see `research/` on this branch
 
-<ordered list of Beads task IDs and titles, updated as tasks close>
+## Update Instructions
 
-## Domain Conventions
+To pull shared base updates from main:
+  git rebase main
 
-<any conventions specific to this replicant's domain>
-
-## Coordination
-
-<how this replicant coordinates with bill and other replicants>
-<!-- END REPLICANT IDENTITY -->
+Only AGENTS.md lines inside BEGIN/END REPLICANT IDENTITY and this file
+will ever conflict. Resolve by keeping goku's values.
